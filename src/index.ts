@@ -20,9 +20,9 @@ function main() {
     const myChain = new Blockchain(difficulty);
 
     const transactions = [
-        "Ali sends Sara 10 coins",
+        "Nimra sends Sara 10 coins",
         "Sara sends Bilal 5 coins",
-        "Bilal sends Ali 2 coins",
+        "Bilal sends Nimra 2 coins",
     ];
 
     transactions.forEach((tx, i) => {
@@ -40,7 +40,7 @@ function main() {
     console.log("Is chain valid?", myChain.isChainValid());
 
     console.log("\n⚠️  Simulating an attacker tampering with block 1...");
-    myChain.chain[1].data = "Ali sends Sara 1000 coins";
+    myChain.chain[1].data = "Nimra sends Sara 1000 coins";
 
     console.log("Validating chain again...");
     console.log("Is chain valid?", myChain.isChainValid());
