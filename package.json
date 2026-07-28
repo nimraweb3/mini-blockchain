@@ -1,25 +1,27 @@
 {
   "name": "mini-blockchain",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A tiny TypeScript blockchain: SHA-256 hashing, Proof-of-Work mining, and chain validation. Built as a learning project on the road to becoming a Web3/blockchain developer.",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nimraweb3/mini-blockchain.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/nimraweb3/mini-blockchain/issues"
-  },
-  "homepage": "https://github.com/nimraweb3/mini-blockchain#readme",
+  "keywords": [
+    "blockchain",
+    "typescript",
+    "sha-256",
+    "proof-of-work"
+  ],
+  "author": "Nimra",
+  "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^26.1.1",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }
