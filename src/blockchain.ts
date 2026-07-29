@@ -1,11 +1,8 @@
-import { Block } from "./block";
+import { Block, Transaction } from "./block";
 
-/**
- * Manages the full chain of blocks: creation, mining, and validation.
- */
 export class Blockchain {
-    public chain: Block[];
-    public difficulty: number;
+    chain: Block[];
+    difficulty: number;
 
     constructor(difficulty: number = 4) {
         this.chain = [this.createGenesisBlock()];
@@ -13,19 +10,19 @@ export class Blockchain {
     }
 
     private createGenesisBlock(): Block {
-        // The first block has no parent, so previousHash is hardcoded to "0".
-        return new Block(0, "Genesis Block", "0");
+        const genesisTransaction: Transaction = {
+            sender: "network",
+            receiver: "network",
+            amount: 0,
+        };
+        return new Block(0, genesisTransaction, "0");
     }
 
     getLatestBlock(): Block {
         return this.chain[this.chain.length - 1];
     }
 
-    /**
-     * Creates a new block, links it to the last block in the chain,
-     * mines it (Proof of Work), then appends it.
-     */
-    addBlock(data: string): Block {
+    addBlock(data: Transaction): Block {
         const newBlock = new Block(
             this.chain.length,
             data,
@@ -36,12 +33,6 @@ export class Blockchain {
         return newBlock;
     }
 
-    /**
-     * Walks the whole chain checking two things per block:
-     *  1. Has the stored data been tampered with? (hash mismatch)
-     *  2. Is this block still properly linked to the one before it?
-     * A single failure anywhere invalidates the entire chain.
-     */
     isChainValid(): boolean {
         for (let i = 1; i < this.chain.length; i++) {
             const current = this.chain[i];

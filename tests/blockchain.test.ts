@@ -9,8 +9,8 @@ describe("Blockchain", () => {
 
     test("adds blocks correctly linked to the previous hash", () => {
         const chain = new Blockchain(2);
-        chain.addBlock("first transaction");
-        chain.addBlock("second transaction");
+        chain.addBlock({ sender: "Ali", receiver: "Sara", amount: 10 });
+        chain.addBlock({ sender: "Sara", receiver: "Bilal", amount: 5 });
 
         expect(chain.chain.length).toBe(3);
         expect(chain.chain[1].previousHash).toBe(chain.chain[0].hash);
@@ -20,7 +20,7 @@ describe("Blockchain", () => {
     test("mined blocks satisfy the difficulty target", () => {
         const difficulty = 3;
         const chain = new Blockchain(difficulty);
-        chain.addBlock("some data");
+        chain.addBlock({ sender: "Ali", receiver: "Sara", amount: 10 });
 
         const target = "0".repeat(difficulty);
         expect(chain.chain[1].hash.substring(0, difficulty)).toBe(target);
@@ -28,26 +28,26 @@ describe("Blockchain", () => {
 
     test("a fresh chain is valid", () => {
         const chain = new Blockchain(2);
-        chain.addBlock("tx 1");
-        chain.addBlock("tx 2");
+        chain.addBlock({ sender: "Ali", receiver: "Sara", amount: 10 });
+        chain.addBlock({ sender: "Sara", receiver: "Bilal", amount: 5 });
 
         expect(chain.isChainValid()).toBe(true);
     });
 
     test("detects tampered block data", () => {
         const chain = new Blockchain(2);
-        chain.addBlock("tx 1");
-        chain.addBlock("tx 2");
+        chain.addBlock({ sender: "Ali", receiver: "Sara", amount: 10 });
+        chain.addBlock({ sender: "Sara", receiver: "Bilal", amount: 5 });
 
-        chain.chain[1].data = "tampered data";
+        chain.chain[1].data.amount = 999999;
 
         expect(chain.isChainValid()).toBe(false);
     });
 
     test("detects a broken previousHash link", () => {
         const chain = new Blockchain(2);
-        chain.addBlock("tx 1");
-        chain.addBlock("tx 2");
+        chain.addBlock({ sender: "Ali", receiver: "Sara", amount: 10 });
+        chain.addBlock({ sender: "Sara", receiver: "Bilal", amount: 5 });
 
         chain.chain[2].previousHash = "0000fakehash";
 

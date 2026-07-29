@@ -1,11 +1,5 @@
 import { Blockchain } from "./blockchain";
 
-/**
- * Entry point. This is what runs when you type `npm start`.
- *
- * Supports an optional CLI flag:
- *   npm start -- --difficulty=5
- */
 function getDifficultyFromArgs(): number {
     const arg = process.argv.find((a) => a.startsWith("--difficulty="));
     if (!arg) return 4;
@@ -15,22 +9,22 @@ function getDifficultyFromArgs(): number {
 
 function main() {
     const difficulty = getDifficultyFromArgs();
-    console.log(`\n🔗 Mini Blockchain — difficulty set to ${difficulty}\n`);
+    console.log(`Mini Blockchain, difficulty set to ${difficulty}\n`);
 
     const myChain = new Blockchain(difficulty);
 
     const transactions = [
-        "Nimra sends Sara 10 coins",
-        "Sara sends Bilal 5 coins",
-        "Bilal sends Nimra 2 coins",
+        { sender: "Ali", receiver: "Sara", amount: 10 },
+        { sender: "Sara", receiver: "Bilal", amount: 5 },
+        { sender: "Bilal", receiver: "Ali", amount: 2 },
     ];
 
     transactions.forEach((tx, i) => {
-        console.log(`Mining block ${i + 1}: "${tx}"`);
+        console.log(`Mining block ${i + 1}: ${tx.sender} sends ${tx.receiver} ${tx.amount} coins`);
         const start = Date.now();
         const block = myChain.addBlock(tx);
         const seconds = ((Date.now() - start) / 1000).toFixed(2);
-        console.log(`  ✅ mined in ${seconds}s | nonce=${block.nonce} | hash=${block.hash}\n`);
+        console.log(`  mined in ${seconds}s | nonce=${block.nonce} | hash=${block.hash}\n`);
     });
 
     console.log("Full chain:");
@@ -39,8 +33,8 @@ function main() {
     console.log("\nValidating chain...");
     console.log("Is chain valid?", myChain.isChainValid());
 
-    console.log("\n⚠️  Simulating an attacker tampering with block 1...");
-    myChain.chain[1].data = "Nimra sends Sara 1000 coins";
+    console.log("\nTampering with block 1...");
+    myChain.chain[1].data.amount = 1000;
 
     console.log("Validating chain again...");
     console.log("Is chain valid?", myChain.isChainValid());

@@ -1,25 +1,24 @@
 import { createHash } from "crypto";
 
 /**
- * A single Block in the chain.
- *
- * Each block stores:
- *  - index        -> its position (0 = genesis)
- *  - timestamp    -> when it was created
- *  - data         -> the payload (a transaction, message, etc.)
- *  - previousHash -> the fingerprint of the block before it (the "link")
- *  - nonce        -> the number we brute-force during mining
- *  - hash         -> this block's own fingerprint (SHA-256)
+ * A transaction payload. Instead of a plain string, a block now stores
+ * structured data: who sent it, who received it, and how much.
  */
-export class Block {
-    public index: number;
-    public timestamp: string;
-    public data: string;
-    public previousHash: string;
-    public nonce: number;
-    public hash: string;
+export interface Transaction {
+    sender: string;
+    receiver: string;
+    amount: number;
+}
 
-    constructor(index: number, data: string, previousHash: string) {
+export class Block {
+    index: number;
+    timestamp: string;
+    data: Transaction;
+    previousHash: string;
+    nonce: number;
+    hash: string;
+
+    constructor(index: number, data: Transaction, previousHash: string) {
         this.index = index;
         this.timestamp = new Date().toISOString();
         this.data = data;
@@ -28,21 +27,16 @@ export class Block {
         this.hash = this.calculateHash();
     }
 
-    /**
-     * Squishes all fields into one string and runs it through SHA-256.
-     * Same input -> always same output (determinism).
-     * One tiny change anywhere -> a completely different hash (avalanche effect).
-     */
     calculateHash(): string {
         const raw =
-            this.index + this.timestamp + this.data + this.previousHash + this.nonce;
+            this.index +
+            this.timestamp +
+            JSON.stringify(this.data) +
+            this.previousHash +
+            this.nonce;
         return createHash("sha256").update(raw).digest("hex");
     }
 
-    /**
-     * Proof of Work: keep incrementing nonce and recalculating the hash
-     * until it starts with `difficulty` number of zeros.
-     */
     mineBlock(difficulty: number): void {
         const target = "0".repeat(difficulty);
         while (this.hash.substring(0, difficulty) !== target) {
